@@ -1,12 +1,10 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 import { isEmail } from "validator";
-const thoughtsSchema = require("./Thoughts");
-
 
 //For Email validation {$regex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ }
 
 //Schema to create our User model
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   username: {
     type: String,
     required: true,
@@ -19,23 +17,27 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: [isEmail, "invalid email"],
   },
+  //Check ref
   thoughts: [
-    {
-      //Swap Types for Model name?
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Thoughts",
-    },
-  ],
-  friends: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-},
-//NEED TO ADD VIRTUAL friendCount to retrieve length of user's friends array
-);
+    {type: Schema.Types.ObjectId, ref: "thoughts",}],
 
-const User = model("user", userSchema);
+  friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
+
+  toJSON: {
+    virtuals: true,
+  },
+  id: false,
+});
+
+//Create a virtual called friendCount that retrieves the length of the users friends array field on query
+userSchema
+.virtual("friendCount")
+//getter
+.get(function () {
+  return `${this.friends.length}`;
+});
+//setter Check to see if we need this
+
+const User = model("User", userSchema);
 
 module.exports = User;

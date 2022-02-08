@@ -1,4 +1,5 @@
-const { Schema, Types} = require("mongoose");
+const { Schema, model } = require("mongoose");
+const reactionSchema = require("./Reactions")
 
 const thoughtsSchema = new Schema({
 thoughtText: {
@@ -17,10 +18,18 @@ username: {
     required: true
 },
 // reactions: //NEED MORE INFO
+reactions: [reactionSchema],
 },
+{
+    toJSON: {
+        getters: true,
+    },
+    id: false,
+}
 //NEED VIRTUAL for reactionCount that retrieves the length of the toughts reactions array
 );
 
-const Thoughts = model("thoughts", thoughtsSchema);
+//Check if upper or lower
+const Thoughts = model("Thoughts", thoughtsSchema);
 
 module.exports = Thoughts;
