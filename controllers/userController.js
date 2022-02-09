@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const { User, Thoughts} = require("../models/User");
 
 module.exports = {
   //Get all users
@@ -71,7 +71,7 @@ module.exports = {
 
   // Remove User thoughts response
   removeUserThoughts(req, res) {
-    User.findOneAndUpdate(
+    Thoughts.findOneAndUpdate(
       { _id: req.params.userId },
       { $pull: { thoughs: { thoughtsId: req.params.thoughtsId } } },
       { runValidators: true, new: true }
