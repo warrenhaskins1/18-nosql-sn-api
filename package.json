@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/warrenhaskins1/18-nosql-sn-api#readme",
   "dependencies": {
+    "moment": "^2.29.1",
     "mongoose": "^6.2.0",
     "nodemon": "^2.0.15"
   }

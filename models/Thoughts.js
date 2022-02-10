@@ -11,13 +11,14 @@ thoughtText: {
 createdAt: {
 type: Date,
 default: Date.now(),
-//Need to add the getter method for the timestamp
+get: createdAtDT => moment(createdAtDT).format("MMMM Do YYYY, h:mm a")
+
 },
 username: {
     type: String,
     required: true
 },
-// reactions: //NEED MORE INFO
+
 reactions: [reactionSchema],
 },
 {
@@ -26,8 +27,12 @@ reactions: [reactionSchema],
     },
     id: false,
 }
-//NEED VIRTUAL for reactionCount that retrieves the length of the toughts reactions array
+
 );
+
+thoughtsSchema.virtual("reactionsCount").get(function() {
+    return this.reactions.length;
+});
 
 //Check if upper or lower
 const Thoughts = model("Thoughts", thoughtsSchema);
