@@ -7,7 +7,7 @@ const reactionsSchema = new Schema({
   //Check Syntax
   reactionId: {
     type: Schema.Types.ObjectId,
-    default: () => new Types.ObjectId()
+    default: () => new Types.ObjectId(),
   },
   reactionBody: {
     type: String,
@@ -21,13 +21,16 @@ const reactionsSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now(),
-    get: createdAtDT => moment(createdAtDT).format("MMMM Do YYYY, h:mm a")
-    
+    get: (createdAtDT) => moment(createdAtDT).format("MMMM Do YYYY, h:mm a"),
   },
+},
+{
   toJSON: {
     getters: true,
   },
   id: false,
-});
+}
+  
+);
 
 module.exports = reactionsSchema;

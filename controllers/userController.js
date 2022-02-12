@@ -2,31 +2,46 @@ const { User, Thoughts } = require("../models");
 
 module.exports = {
   //Get all users
-  getUser(req, res) {
+  getUsers(req, res) {
     User.find()
-      .then((users) => res.json(users))
-      .catch((err) => res.status(500).json(err));
+    .select("-__v")
+    .then((dbUserData) => {
+      res.json(dbUserData);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
   },
+
   //Get single user
   getSingleUser(req, res) {
     User.findOne({ _id: req.params.userId })
-      .populate("thoughts")
-      .populate("friends")
-      .then((user) =>
-        !user
-          ? res
-              .status(404)
-              .json({ message: "Sorry, there is no User with that Id!" })
-          : res.json(user)
-      )
-      .catch((err) => res.status(500).json(err));
+      .select('-__v')
+      .populate('friends')
+      .populate('thoughts')
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          return res.status(404).json({ message: "No User with this id!!" });
+        }
+        res.json(dbUserData);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
   },
 
   //Create a new User (Post)
   createUser(req, res) {
     User.create(req.body)
-      .then((dbUserData) => res.json(dbUserData))
-      .catch((err) => res.status(500).json(err));
+    .then((dbUserData) => {
+      res.json(dbUserData);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
   },
 
   //findOneandUpdate
@@ -36,15 +51,16 @@ module.exports = {
       { $set: req.body },
       { runValidators: true, new: true }
     )
-      .then((user) =>
-        !user
-          ? res.status(404).json({ message: "No User with this id!" })
-          : res.json(user)
-      )
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json(err);
-      });
+    .then((dbUserData) => {
+      if (!dbUserData) {
+        return res.status(404).json({ message: 'This User does not exist!!' });
+      }
+      res.json(dbUserData);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
   },
 
   //findOneAndDelete
@@ -82,5 +98,33 @@ module.exports = {
           : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
+  },
+
+  addFriend(req, res) {
+    User.findOneAndUpdate({ _id: req.params.userId }, { $addToSet: { friends: req.params.friendId } }, { new: true })
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          return res.status(404).json({ message: "No User with this id!" });
+        }
+        res.json(dbUserData);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
+  // Remove a friend
+  removeFriend(req, res) {
+    User.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: req.params.friendId } }, { new: true })
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          return res.status(404).json({ message: "No User with this id!" });
+        }
+        res.json(dbUserData);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
   },
 };
