@@ -36,13 +36,13 @@ module.exports = {
           { new: true }
         );
       })
-      .then((dbUserData) =>
-        !dbUserData
-          ? res.status(404).json({
-              message: "Thought has been created, but there is no user with that ID",
-            })
-          : res.json("Thought CREATED!!!!")
-      )
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          return res.status(201).json({ message: "Thought CREATED!!!!!!!" });
+        }
+
+        res.json({ message: "Thought CREATED!!!!!!!" });
+      })
       .catch((err) => {
         console.log(err);
         res.status(500).json(err);
@@ -90,9 +90,9 @@ module.exports = {
       .then((dbUserData) => {
         if (!dbUserData) {
           return res
-            .status(404)
+            .status(201)
             .json({
-              message: "Thought created, but there's no User with this id!!!!",
+              message: "Thought has been DELETED!",
             });
         }
         res.json({ message: "Thought has been DELETED!" });
@@ -113,7 +113,7 @@ module.exports = {
     )
       .then((dbThoughtData) => {
         if (!dbThoughtData) {
-          return res.status(404).json({ message: "No User with this id!" });
+          return res.status(201).json({ message: "Reaction Added!!" });
         }
         res.json(dbThoughtData);
       })
@@ -133,7 +133,7 @@ module.exports = {
     )
       .then((dbThoughtData) => {
         if (!dbThoughtData) {
-          return res.status(404).json({ message: "No Thought with this id!!" });
+          return res.status(201).json({ message: "Reaction Deleted!!!" });
         }
         res.json(dbThoughtData);
       })

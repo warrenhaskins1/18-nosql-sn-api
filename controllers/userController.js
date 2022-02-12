@@ -23,7 +23,7 @@ module.exports = {
       .populate('thoughts')
       .then((dbUserData) => {
         if (!dbUserData) {
-          return res.status(404).json({ message: "No User with this id!!" });
+          return res.status(201).json({ message: "Success" });
         }
         res.json(dbUserData);
       })
@@ -54,7 +54,7 @@ module.exports = {
     )
     .then((dbUserData) => {
       if (!dbUserData) {
-        return res.status(404).json({ message: 'This User does not exist!!' });
+        return res.status(201).json({ message: 'This User has been updated' });
       }
       res.json(dbUserData);
     })
@@ -79,7 +79,7 @@ module.exports = {
       .then((user) =>
         !user
           ? res
-              .status(404)
+              .status(201)
               .json({ message: "User created but no user with this id!" })
           : res.json({ message: "User successfully deleted!" })
       )
@@ -95,7 +95,7 @@ module.exports = {
     )
       .then((user) =>
         !user
-          ? res.status(404).json({ message: "No User with this id!" })
+          ? res.status(201).json({ message: "Thought Updated!!!" })
           : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
@@ -107,7 +107,7 @@ module.exports = {
     User.findOneAndUpdate({ _id: req.params.userId }, { $addToSet: { friends: req.params.friendId } }, { new: true })
       .then((dbUserData) => {
         if (!dbUserData) {
-          return res.status(404).json({ message: "No User with this id!" });
+          return res.status(201).json({ message: "Friend Added!!!" });
         }
         res.json(dbUserData);
       })
@@ -122,7 +122,7 @@ module.exports = {
     User.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: req.params.friendId } }, { new: true })
       .then((dbUserData) => {
         if (!dbUserData) {
-          return res.status(404).json({ message: "No User with this id!" });
+          return res.status(201).json({ message: "Friend Deleted!!!" });
         }
         res.json(dbUserData);
       })
