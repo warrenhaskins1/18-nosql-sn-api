@@ -4,7 +4,7 @@ const moment = require("moment");
 
 //Create a new instance of our Reactions Schema
 const reactionsSchema = new Schema({
-  //Check Syntax
+  
   reactionId: {
     type: Schema.Types.ObjectId,
     default: () => new Types.ObjectId(),
